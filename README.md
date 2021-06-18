@@ -2,4 +2,4 @@
 
 Valor dos dados inseridos aleatóriamente.
 
-Para busca por data seguir o modelo "dia-mes-ano"
+Para busca por data seguir o modelo "dia-mês-ano"
