@@ -10,10 +10,7 @@ detectores_list = Detector_dao().resultados_list()
 @app.route("/valores", methods=['GET'])
 def home():
     with open('dados.json', 'r') as var:
-        dados_json = json.load(var)
-        
-    with open('dados.json', 'w') as var:
-        json.dump(dados_json, var)   
+        dados_json = json.load(var) 
     return jsonify(dados_json)
 
 @app.route("/valores", methods=['POST'])
@@ -29,6 +26,13 @@ def add_Medida():
     umidade = int(request.json.get("Umidade", None))
     new_detector = Poluicao(id, data, ozonio,material_particulado , monox_carbono, ox_Nitroso, gas, temperatura, umidade)
     detectores_list.append(new_detector)
+    with open('dados.json', 'r') as var:
+        new_json =[new_detector.toJson()]
+        dados_json = json.load(var)+ new_json
+        
+    with open('dados.json', 'w') as var:
+        json.dump(dados_json, var)
+        
     return new_detector.toJson(), 201
 
 
