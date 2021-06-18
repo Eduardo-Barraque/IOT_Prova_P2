@@ -25,7 +25,6 @@ def add_Medida():
     temperatura = int(request.json.get("Temperatura", None))
     umidade = int(request.json.get("Umidade", None))
     new_detector = Poluicao(id, data, ozonio,material_particulado , monox_carbono, ox_Nitroso, gas, temperatura, umidade)
-    detectores_list.append(new_detector)
     with open('dados.json', 'r') as var:
         new_json =[new_detector.toJson()]
         dados_json = json.load(var)+ new_json
@@ -39,25 +38,32 @@ def add_Medida():
 @app.route("/valores/id/<id>", methods=['GET'])
 def view_valor(id):
     view_list = []
-    for medida in detectores_list:
-        if medida.id == id:
+    with open('dados.json', 'r') as var:
+        dados_json = json.load(var)
+        
+    for medida in dados_json:
+        if medida.get("Detector") == id:
             view_list.append(medida)
+
     if view_list == []:
-        return jsonify({"error": "Medicao não encontrada"}), 404
+        return jsonify({"error": "Id não encontrado"}), 404
+    
     else:
-        dados_view = [dado.toJson() for dado in view_list ]
-        return jsonify(dados_view)
+        return jsonify(view_list)
 
 
 @app.route("/valores/data/<datas>", methods=['GET'])
 def view_data(datas):
     data_list = []
-    for medida in detectores_list:
-        medida_data = date.strftime(medida.data,'%d-%m-%Y')
+    with open('dados.json', 'r') as var:
+        datas_json = json.load(var)
+        
+    for medida in datas_json:
+        medida_data = medida.get("data")
+        medida_data = date.strftime(medida_data,'%d-%m-%Y')
         if medida_data == datas:
             data_list.append(medida)
     if data_list == []:
         return jsonify({"error": "Data não encontrada"}), 404
     else:
-        data_view = [dado.toJson() for dado in data_list ]
-        return jsonify(data_view)
+        return jsonify(data_list)
