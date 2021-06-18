@@ -1,11 +1,8 @@
 from flask import jsonify, request
 from application.model.entity.detector import Poluicao
-from application.model.dao.detectores_dao import Detector_dao
-from datetime import datetime, date 
+from datetime import datetime
 import json
 from application import app
-
-detectores_list = Detector_dao().resultados_list()
 
 @app.route("/valores", methods=['GET'])
 def home():
@@ -55,12 +52,14 @@ def view_valor(id):
 @app.route("/valores/data/<datas>", methods=['GET'])
 def view_data(datas):
     data_list = []
+    datas = datetime.strptime(datas,"%d-%m-%Y").date()
     with open('dados.json', 'r') as var:
         datas_json = json.load(var)
         
     for medida in datas_json:
         medida_data = medida.get("data")
-        medida_data = date.strftime(medida_data,'%d-%m-%Y')
+        medida_data = datetime.strptime(medida_data,"%d/%m/%Y %H:%M").date()
+        
         if medida_data == datas:
             data_list.append(medida)
     if data_list == []:
